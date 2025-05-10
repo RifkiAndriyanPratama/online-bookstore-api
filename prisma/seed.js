@@ -9,23 +9,24 @@ async function main() {
     },
   });
 
-  const book = await prisma.book.createMany({
-    data: [
-      {
-        title: "Javascript",
-        isbn: "91238938920183983",
-        publication_year: 2010,
-        genre: "Programming",
-        author_id: author.id,
-      },
-      {
-        title: "Learn Web Developer",
-        isbn: "9780132350000",
-        publication_year: 2021,
-        genre: "Programming",
-        author_id: author.id,
-      },
-    ],
+  const book1 = await prisma.book.create({
+    data: {
+      title: "Javascript",
+      isbn: "91238938920183983",
+      publication_year: 2010,
+      genre: "Programming",
+      author_id: author.id,
+    },
+  });
+
+  const book2 = await prisma.book.create({
+    data: {
+      title: "Learn Web Developer",
+      isbn: "9780132350000",
+      publication_year: 2021,
+      genre: "Programming",
+      author_id: author.id,
+    },
   });
 
   const warehouse = await prisma.warehouse.create({
@@ -34,12 +35,22 @@ async function main() {
     },
   });
 
-  const product = await prisma.bookProduct.create({
+  const product1 = await prisma.bookProduct.create({
     data: {
       format: "Hardcover",
       price: 250000,
       stock: 10,
-      book_id: book.id,
+      book_id: book1.id,
+      warehouse_id: warehouse.id,
+    },
+  });
+
+  const product2 = await prisma.bookProduct.create({
+    data: {
+      format: "E-book",
+      price: 50000,
+      stock: 10,
+      book_id: book2.id,
       warehouse_id: warehouse.id,
     },
   });
@@ -64,16 +75,25 @@ async function main() {
   await prisma.cartItem.create({
     data: {
       cart_id: cart.id,
-      book_product_id: product.id,
+      book_product_id: product1.id,
       quantity: 1,
     },
   });
 
+  await prisma.cartItem.create({
+    data: {
+      cart_id: cart.id,
+      book_product_id: product2.id,
+      quantity: 1,
+    },
+  });
+
+  const totalAmount = product1.price + product2.price;
   await prisma.invoice.create({
     data: {
       cart_id: cart.id,
       customer_id: customer.id,
-      total_amount: product.price,
+      total_amount: totalAmount,
       status: "pending",
     },
   });
