@@ -27,7 +27,7 @@ model Customer {
 
 model Author {
   id    String @id @default(uuid())
-  name  String
+  name  String @unique
   books Book[]
 }
 
