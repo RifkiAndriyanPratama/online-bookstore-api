@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  address   String
+  phone     String
+  cart      Cart?
+  invoices  Invoice[]
+  createdAt DateTime @default(now())
+}
+
+model Author {
+  id    String @id @default(uuid())
+  name  String
+  books Book[]
+}
+
+model Book {
+  id               String        @id @default(uuid())
+  title            String
+  isbn             String        @unique
+  publication_year Int
+  genre            String
+  author_id        String
+  author           Author        @relation(fields: [author_id], references: [id])
+  products         BookProduct[]
+}
+
+model BookProduct {
+  id           String     @id @default(uuid())
+  format       String
+  price        Int
+  stock        Int
+  book_id      String
+  warehouse_id String
+  book         Book       @relation(fields: [book_id], references: [id])
+  warehouse    Warehouse  @relation(fields: [warehouse_id], references: [id])
+  cartItems    CartItem[]
+}
+
+model Warehouse {
+  id       String        @id @default(uuid())
+  name     String
+  products BookProduct[]
+}
+
+model Cart {
+  id         String     @id @default(uuid())
+  customer_id String     @unique
+  customer   Customer   @relation(fields: [customer_id], references: [id])
+  createdAt  DateTime   @default(now())
+  items      CartItem[]
+  invoice    Invoice?
+}
+
+
+model CartItem {
+  id               String       @id @default(uuid())
+  cart_id          String
+  book_product_id String
+  quantity         Int
+  created_at       DateTime     @default(now())
+  cart             Cart         @relation(fields: [cart_id], references: [id])
+  product          BookProduct  @relation(fields: [book_product_id], references: [id])
+}
+
+model Invoice {
+  id           String   @id @default(uuid())
+  cart_id      String   @unique
+  customer_id  String
+  total_amount Int
+  status       String   // pending, paid, etc.
+  issued_at    DateTime @default(now())
+  cart         Cart     @relation(fields: [cart_id], references: [id])
+  customer     Customer @relation(fields: [customer_id], references: [id])
+}
