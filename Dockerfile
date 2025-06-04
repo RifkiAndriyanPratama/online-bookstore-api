@@ -16,5 +16,8 @@ COPY . .
 # Generate Prisma Client
 RUN npx prisma generate
 
+# Jalankan seeder
+RUN node prisma/seed.js
+
 # Jalankan server
 CMD ["npm", "run", "dev"]
