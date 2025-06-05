@@ -41,7 +41,7 @@ async function main() {
 
   const product1 = await prisma.bookProduct.upsert({
     where: {
-      id: "product1", // manual ID atau buat kombinasi unik sendiri kalau mau
+      id: "product1",
     },
     update: {},
     create: {

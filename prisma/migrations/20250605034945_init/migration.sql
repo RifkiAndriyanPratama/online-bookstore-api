@@ -53,8 +53,8 @@ CREATE TABLE "Warehouse" (
 
 -- CreateTable
 CREATE TABLE "Cart" (
-    "id" UUID NOT NULL,
-    "customer_id" UUID NOT NULL,
+    "id" TEXT NOT NULL,
+    "customer_id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Cart_pkey" PRIMARY KEY ("id")
@@ -64,7 +64,7 @@ CREATE TABLE "Cart" (
 CREATE TABLE "CartItem" (
     "id" TEXT NOT NULL,
     "cart_id" TEXT NOT NULL,
-    "books_product_id" TEXT NOT NULL,
+    "book_product_id" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -75,10 +75,10 @@ CREATE TABLE "CartItem" (
 CREATE TABLE "Invoice" (
     "id" TEXT NOT NULL,
     "cart_id" TEXT NOT NULL,
+    "customer_id" TEXT NOT NULL,
     "total_amount" INTEGER NOT NULL,
     "status" TEXT NOT NULL,
     "issued_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "customer_id" TEXT NOT NULL,
 
     CONSTRAINT "Invoice_pkey" PRIMARY KEY ("id")
 );
@@ -87,7 +87,13 @@ CREATE TABLE "Invoice" (
 CREATE UNIQUE INDEX "Customer_email_key" ON "Customer"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Author_name_key" ON "Author"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Book_isbn_key" ON "Book"("isbn");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Warehouse_name_key" ON "Warehouse"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Cart_customer_id_key" ON "Cart"("customer_id");
@@ -111,7 +117,7 @@ ALTER TABLE "Cart" ADD CONSTRAINT "Cart_customer_id_fkey" FOREIGN KEY ("customer
 ALTER TABLE "CartItem" ADD CONSTRAINT "CartItem_cart_id_fkey" FOREIGN KEY ("cart_id") REFERENCES "Cart"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "CartItem" ADD CONSTRAINT "CartItem_books_product_id_fkey" FOREIGN KEY ("books_product_id") REFERENCES "BookProduct"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "CartItem" ADD CONSTRAINT "CartItem_book_product_id_fkey" FOREIGN KEY ("book_product_id") REFERENCES "BookProduct"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Invoice" ADD CONSTRAINT "Invoice_cart_id_fkey" FOREIGN KEY ("cart_id") REFERENCES "Cart"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
