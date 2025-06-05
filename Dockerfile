@@ -12,4 +12,4 @@ RUN npx prisma generate
 
 EXPOSE 3000
 
-CMD npx prisma migrate deploy && node prisma/seed.js && node src/index.js
+CMD ["npm", "run", "start"]
