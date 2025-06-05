@@ -8,7 +8,14 @@ RUN npm install
 
 COPY . .
 
+# Generate Prisma Client
 RUN npx prisma generate
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node prisma/seed.js && npm run dev"]
+# Jalankan migrasi
+RUN npx prisma migrate deploy && node prisma/seed.js
 
+# Expose port
+EXPOSE 3000
+
+# Jalankan server
+CMD ["node", "src/index.js"]
