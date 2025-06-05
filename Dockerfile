@@ -8,14 +8,8 @@ RUN npm install
 
 COPY . .
 
-# Generate Prisma Client
 RUN npx prisma generate
 
-# Jalankan migrasi
-RUN npx prisma migrate deploy && node prisma/seed.js
-
-# Expose port
 EXPOSE 3000
 
-# Jalankan server
-CMD ["node", "src/index.js"]
+CMD npx prisma migrate deploy && node prisma/seed.js && node src/index.js
